@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router'; 
 import Swal from 'sweetalert2';
 
 const MyPostedTasks = () => {
@@ -22,7 +22,6 @@ const MyPostedTasks = () => {
             setLoading(true);
             setError(null);
             try {
-                
                 const response = await fetch(`http://localhost:5000/tasks?userId=${user.uid}`);
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -57,11 +56,42 @@ const MyPostedTasks = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                
-                Swal.fire('Not Implemented!', 'Delete functionality is not yet implemented.', 'info');
+                try {
+
+                    const taskToDelete = myTasks.find(task => task._id === taskId);
+                    if (taskToDelete && taskToDelete.userId !== user.uid) {
+                        Swal.fire('Access Denied!', 'You can only delete tasks you have posted.', 'error');
+                        return;
+                    }
+
+                    const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+                        method: 'DELETE',
+
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Failed to delete the task.');
+                    }
+
+
+                    setMyTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+                    
+                    Swal.fire(
+                        'Deleted!',
+                        'Your task has been deleted.',
+                        'success'
+                    );
+                } catch (err) {
+                    console.error("Error deleting task:", err);
+                    Swal.fire(
+                        'Error!',
+                        err.message || 'Could not delete the task. Please try again.',
+                        'error'
+                    );
+                }
             }
         });
-        console.log("Delete task:", taskId);
     };
 
     const handleUpdateTask = (taskId) => {
@@ -69,7 +99,6 @@ const MyPostedTasks = () => {
     };
 
     const handleViewBids = (taskId) => {
-        
         Swal.fire('Not Implemented!', 'View Bids functionality is not yet implemented.', 'info');
         console.log("View bids for task:", taskId);
     };
