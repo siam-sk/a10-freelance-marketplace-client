@@ -98,11 +98,40 @@ const MyPostedTasks = () => {
         navigate(`/update-task/${taskId}`); 
     };
 
-    const handleViewBids = (taskId) => {
-        Swal.fire('Not Implemented!', 'View Bids functionality is not yet implemented.', 'info');
-        console.log("View bids for task:", taskId);
-    };
+    const handleViewBids = async (taskId) => {
+        try {
+            Swal.fire({
+                title: 'Fetching Bids...',
+                text: 'Please wait while we retrieve the bid count.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
+            const response = await fetch(`http://localhost:5000/bids/task/${taskId}/count`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json(); 
+
+            Swal.fire(
+                'Total Bids',
+                `This task has received ${data.count} bid(s).`,
+                'info'
+            );
+        } catch (error) {
+            console.error("Error fetching bid count:", error);
+            Swal.fire(
+                'Error!',
+                error.message || 'Could not retrieve bid count. Please try again.',
+                'error'
+            );
+        }
+    };
 
     if (loading || authLoading) {
         return (
