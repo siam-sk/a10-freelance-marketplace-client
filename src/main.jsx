@@ -1,14 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import './index.css'
 import { RouterProvider } from 'react-router'
 import router from './routes/routes.jsx'
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider } from './contexts/AuthContext.jsx'
+import { BidProvider } from './contexts/BidContext.jsx' 
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <BidProvider>
+        <RouterProvider router={router} />
+      </BidProvider>
     </AuthProvider>
-  </StrictMode>,
+  </React.StrictMode>,
 )

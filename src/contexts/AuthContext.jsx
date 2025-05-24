@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import {
     onAuthStateChanged,
     signInWithEmailAndPassword,
@@ -38,11 +38,10 @@ export const AuthProvider = ({ children }) => {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const signup = async (email, password, displayName, photoURL) => {
+  const signup = useCallback(async (email, password, displayName, photoURL) => {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -50,57 +49,61 @@ export const AuthProvider = ({ children }) => {
         displayName: displayName,
         photoURL: photoURL || null
       });
-      setUser({ ...userCredential.user, displayName, photoURL });
-      setLoading(false);
+      setUser({ 
+        uid: userCredential.user.uid, 
+        email: userCredential.user.email, 
+        displayName: displayName, 
+        photoURL: photoURL || userCredential.user.photoURL 
+      });
       return userCredential;
     } catch (error) {
-      setLoading(false);
       console.error('Signup failed:', error.message, 'Code:', error.code);
       throw error;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false);
       return userCredential.user;
     } catch (error) {
-      setLoading(false);
       console.error('Login failed:', error.message, 'Code:', error.code);
       throw error;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = useCallback(async () => {
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
-      setLoading(false);
       return result;
     } catch (error) {
-      setLoading(false);
       console.error('Google Sign-In failed:', error.message, 'Code:', error.code);
       throw error;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setLoading(true);
     try {
       await signOut(auth);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       console.error('Logout failed:', error.message, 'Code:', error.code);
       throw error;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
   
-  const updateUserProfileData = async (profileData) => {
+  const updateUserProfileData = useCallback(async (profileData) => {
     if (auth.currentUser) {
       setLoading(true);
       try {
@@ -109,21 +112,21 @@ export const AuthProvider = ({ children }) => {
             ...prevUser,
             displayName: auth.currentUser.displayName,
             photoURL: auth.currentUser.photoURL,
-            ...profileData 
+            ...profileData
         }));
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
         console.error("Failed to update profile", error);
         throw error;
+      } finally {
+        setLoading(false);
       }
     } else {
         console.error("No user logged in to update profile");
         throw new Error("No user logged in");
     }
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     loading,
     signup,
@@ -131,7 +134,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     signInWithGoogle,
     updateUserProfileData
-  };
+  }), [user, loading, signup, login, logout, signInWithGoogle, updateUserProfileData]);
 
   return (
     <AuthContext.Provider value={value}>

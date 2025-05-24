@@ -1,36 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import { useBids } from '../contexts/BidContext';
 import Swal from 'sweetalert2';
 
 const TaskDetail = () => {
     const { taskId } = useParams();
     const { user, loading: authLoading } = useAuth();
+    const { totalBidOpportunities, addBid, hasBid, loadingBids, refreshBids } = useBids();
     const navigate = useNavigate();
     const [task, setTask] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loadingTask, setLoadingTask] = useState(true);
     const [error, setError] = useState(null);
+    const [isPlacingBid, setIsPlacingBid] = useState(false);
 
     useEffect(() => {
-        if (authLoading) {
-            return;
-        }
-        if (!user) {
-            
+        if (authLoading) return;
+        if (!user && !authLoading) {
             navigate('/login', { state: { from: { pathname: `/task/${taskId}` } } });
             return;
         }
 
         const fetchTask = async () => {
-            setLoading(true);
+            setLoadingTask(true);
             setError(null);
             try {
                 const response = await fetch(`http://localhost:5000/tasks/${taskId}`);
                 if (!response.ok) {
                     const errorData = await response.json();
-                    if (response.status === 404) {
-                        throw new Error("Task not found. It might have been removed or the ID is incorrect.");
-                    }
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
@@ -38,25 +35,54 @@ const TaskDetail = () => {
             } catch (err) {
                 console.error("Failed to fetch task details:", err);
                 setError(err.message);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to Load Task Details',
-                    text: err.message || 'Could not retrieve task details from the server.',
-                });
+                Swal.fire({ icon: 'error', title: 'Failed to Load Task', text: err.message });
             } finally {
-                setLoading(false);
+                setLoadingTask(false);
             }
         };
 
-        if (taskId) {
+        if (user && taskId) {
             fetchTask();
-        } else {
+        } else if (!taskId) {
             setError("Task ID is missing.");
-            setLoading(false);
+            setLoadingTask(false);
         }
     }, [taskId, user, authLoading, navigate]);
 
-    if (loading || authLoading) {
+    useEffect(() => {
+        if (user && user.uid) {
+            refreshBids();
+        }
+    }, [user, refreshBids]);
+
+    const handlePlaceBid = async () => {
+        if (!user) {
+            Swal.fire('Login Required', 'You need to be logged in to place a bid.', 'warning');
+            navigate('/login', { state: { from: { pathname: `/task/${taskId}` } } });
+            return;
+        }
+        setIsPlacingBid(true);
+        try {
+            await addBid(taskId);
+            Swal.fire({
+                icon: 'success',
+                title: 'Bid Placed!',
+                text: 'Your bid has been recorded for this opportunity.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Bid Failed',
+                text: error.message || 'Could not place your bid. You might have already bid on this task.',
+            });
+        } finally {
+            setIsPlacingBid(false);
+        }
+    };
+
+    if (loadingTask || authLoading || loadingBids) {
         return (
             <div className="min-h-[calc(100vh-136px)] flex items-center justify-center bg-base-200">
                 <span className="loading loading-spinner loading-lg text-primary"></span>
@@ -69,9 +95,7 @@ const TaskDetail = () => {
             <div className="min-h-[calc(100vh-136px)] flex flex-col items-center justify-center bg-base-200 p-4">
                 <h2 className="text-2xl font-semibold text-error mb-4">Error Loading Task</h2>
                 <p className="text-base-content/70 mb-6 text-center">{error}</p>
-                <Link to="/browse-tasks" className="btn btn-primary">
-                    Back to Browse Tasks
-                </Link>
+                <Link to="/browse-tasks" className="btn btn-primary">Back to Browse Tasks</Link>
             </div>
         );
     }
@@ -84,9 +108,18 @@ const TaskDetail = () => {
         );
     }
 
+    const userIsOwner = user && task.userId === user.uid;
+    const alreadyBidOnThisTask = hasBid(taskId);
+
     return (
         <div className="min-h-[calc(100vh-136px)] bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
             <div className="container mx-auto max-w-3xl">
+                {user && (
+                    <div className="mb-6 text-center p-3 bg-info text-info-content rounded-md shadow">
+                        You have bid on <span className="font-bold text-lg">{totalBidOpportunities}</span> {totalBidOpportunities === 1 ? "opportunity" : "opportunities"} so far.
+                    </div>
+                )}
+
                 <div className="card bg-base-100 shadow-xl">
                     <div className="card-body p-6 md:p-10">
                         <div className="flex flex-col sm:flex-row justify-between items-start mb-6">
@@ -124,13 +157,21 @@ const TaskDetail = () => {
                              <p><strong>Email:</strong> {task.userEmail || 'N/A'}</p>
                         </div>
 
-
                         <div className="card-actions justify-end mt-8">
-                            
                             <Link to="/browse-tasks" className="btn btn-outline">Back to Tasks</Link>
                             
-                            {user && task.userId !== user.uid && (
-                                <button className="btn btn-primary">Apply for this Task</button>
+                            {user && !userIsOwner && (
+                                alreadyBidOnThisTask ? (
+                                    <button className="btn btn-success btn-disabled" disabled>Bid Placed</button>
+                                ) : (
+                                    <button 
+                                        className={`btn btn-primary ${isPlacingBid ? 'loading' : ''}`}
+                                        onClick={handlePlaceBid}
+                                        disabled={isPlacingBid}
+                                    >
+                                        {isPlacingBid ? 'Placing Bid...' : 'Place Bid'}
+                                    </button>
+                                )
                             )}
                         </div>
                     </div>
