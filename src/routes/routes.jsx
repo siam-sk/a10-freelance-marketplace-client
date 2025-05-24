@@ -1,11 +1,12 @@
-import { createBrowserRouter } from "react-router"; // Ensure using react-router-dom
+import { createBrowserRouter } from "react-router";
 import Home from "../pages/Home";
 import Root from "../pages/Root";
 import ErrorPage from "../pages/ErrorPage";
 import Login from "../pages/Login"; 
 import Signup from "../pages/Signup"; 
-import AddTask from "../pages/AddTask"; // Import the AddTask page
-import PrivateRoute from "./PrivateRoute"; // Import the PrivateRoute component
+import AddTask from "../pages/AddTask";
+import PrivateRoute from "./PrivateRoute";
+import BrowseTask from "../pages/BrowseTask";
 
 const router = createBrowserRouter([
   {
@@ -26,23 +27,17 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: "add-task", // Define the route for adding a task
+        path: "add-task",
         element: (
           <PrivateRoute>
             <AddTask />
           </PrivateRoute>
         ),
       },
-      // You might want to add a "My Tasks" page route as well
-      // {
-      //   path: "my-tasks",
-      //   element: (
-      //     <PrivateRoute>
-      //       {/* Replace with your MyTasks component */}
-      //       <div>My Posted Tasks Page (Placeholder)</div> 
-      //     </PrivateRoute>
-      //   ),
-      // },
+      {
+        path: "browse-tasks", 
+        element: <BrowseTask />,
+      },
       
     ],
   },
