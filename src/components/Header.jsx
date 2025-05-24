@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router'; // Corrected import
+import { Link, NavLink, useNavigate } from 'react-router'; 
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
@@ -67,7 +67,7 @@ const Header = () => {
             </li>
         ));
 
-    if (loading && !user) { // Adjusted loading condition to prevent brief flash of login buttons if user is already known
+    if (loading && !user) { 
         return <div className="navbar bg-base-100 text-base-content sticky top-0 z-[99] backdrop-blur-sm h-[68px] animate-pulse"></div>;
     }
 

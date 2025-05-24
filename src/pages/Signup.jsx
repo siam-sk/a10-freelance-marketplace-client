@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import Swal from 'sweetalert2';
 
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [displayName, setDisplayName] = useState('');
     const [photoURL, setPhotoURL] = useState('');
-    const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { signup, signInWithGoogle, loading } = useAuth();
@@ -15,40 +15,71 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        setError('');
+
         if (password.length < 6) {
-            setError("Password should be at least 6 characters long.");
+            Swal.fire({ icon: 'warning', title: 'Validation Error', text: "Password must be at least 6 characters long." });
             return;
         }
-    
+        if (!/[A-Z]/.test(password)) {
+            Swal.fire({ icon: 'warning', title: 'Validation Error', text: "Password must contain at least one uppercase letter." });
+            return;
+        }
+        if (!/[a-z]/.test(password)) {
+            Swal.fire({ icon: 'warning', title: 'Validation Error', text: "Password must contain at least one lowercase letter." });
+            return;
+        }
+ 
         if (photoURL && !photoURL.startsWith('http')) {
-            setError("Please enter a valid URL for the photo.");
+            Swal.fire({ icon: 'warning', title: 'Validation Error', text: "Please enter a valid URL for the photo." });
             return;
         }
 
         setIsSubmitting(true);
         try {
             await signup(email, password, displayName, photoURL); 
+            Swal.fire({
+                icon: 'success',
+                title: 'Account Created!',
+                text: 'Welcome to TalentSphere!',
+                timer: 2000,
+                showConfirmButton: false
+            });
             navigate('/'); 
         } catch (err) {
+            let errorMessage = 'Failed to create an account. Please try again.';
             if (err.code === 'auth/email-already-in-use') {
-                setError('This email address is already in use.');
-            } else {
-                setError('Failed to create an account. Please try again.');
+                errorMessage = 'This email address is already in use.';
+            } else if (err.message) {
+                errorMessage = err.message;
             }
+            Swal.fire({
+                icon: 'error',
+                title: 'Signup Failed',
+                text: errorMessage,
+            });
             console.error("Signup error:", err);
         }
         setIsSubmitting(false);
     };
 
     const handleGoogleLogin = async () => {
-        setError('');
         setIsSubmitting(true);
         try {
             await signInWithGoogle();
+            Swal.fire({
+                icon: 'success',
+                title: 'Account Created/Logged In!',
+                text: 'Welcome!',
+                timer: 2000,
+                showConfirmButton: false
+            });
             navigate('/'); 
         } catch (err) {
-            setError('Failed to sign in with Google. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Google Sign-In Failed',
+                text: err.message || 'An error occurred. Please try again.',
+            });
             console.error("Google sign-in error:", err);
         }
         setIsSubmitting(false);
@@ -63,7 +94,6 @@ const Signup = () => {
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSignup}>
-                    {error && <p className="text-center text-sm text-error bg-error/10 p-3 rounded-md">{error}</p>}
                     <div className="rounded-md shadow-sm">
                         <div>
                             <label htmlFor="display-name" className="sr-only">

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import Swal from 'sweetalert2';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { login, signInWithGoogle, loading } = useAuth();
@@ -15,26 +15,46 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError('');
         setIsSubmitting(true);
         try {
             await login(email, password);
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged In!',
+                text: 'Welcome back!',
+                timer: 1500,
+                showConfirmButton: false
+            });
             navigate(from, { replace: true });
         } catch (err) {
-            setError('Failed to log in. Please check your credentials.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: err.message || 'Please check your credentials and try again.',
+            });
             console.error("Login error:", err);
         }
         setIsSubmitting(false);
     };
 
     const handleGoogleLogin = async () => {
-        setError('');
         setIsSubmitting(true);
         try {
             await signInWithGoogle();
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged In!',
+                text: 'Welcome!',
+                timer: 1500,
+                showConfirmButton: false
+            });
             navigate(from, { replace: true });
         } catch (err) {
-            setError('Failed to log in with Google. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Google Login Failed',
+                text: err.message || 'An error occurred. Please try again.',
+            });
             console.error("Google login error:", err);
         }
         setIsSubmitting(false);
@@ -49,7 +69,6 @@ const Login = () => {
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-                    {error && <p className="text-center text-sm text-error bg-error/10 p-3 rounded-md">{error}</p>}
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
                             <label htmlFor="email-address" className="sr-only">
