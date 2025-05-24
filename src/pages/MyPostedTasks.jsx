@@ -65,9 +65,7 @@ const MyPostedTasks = () => {
     };
 
     const handleUpdateTask = (taskId) => {
-        
-        Swal.fire('Not Implemented!', 'Update functionality is not yet implemented. It would typically navigate to an edit page.', 'info');
-        console.log("Update task:", taskId);
+        navigate(`/update-task/${taskId}`); 
     };
 
     const handleViewBids = (taskId) => {

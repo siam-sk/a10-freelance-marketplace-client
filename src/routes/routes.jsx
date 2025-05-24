@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router"; 
 import Home from "../pages/Home";
 import Root from "../pages/Root";
 import ErrorPage from "../pages/ErrorPage";
@@ -9,6 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import BrowseTask from "../pages/BrowseTask";
 import TaskDetail from "../pages/TaskDetail";
 import MyPostedTasks from "../pages/MyPostedTasks";
+import UpdateTask from "../pages/UpdateTask";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyPostedTasks />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "update-task/:taskId",
+        element: (
+          <PrivateRoute>
+            <UpdateTask />
           </PrivateRoute>
         ),
       },
