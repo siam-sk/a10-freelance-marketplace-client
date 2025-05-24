@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { Typewriter, Cursor } from 'react-simple-typewriter';
 
 const slidesData = [
     {
         id: 1,
-        title: "Unlock Your Freelance Potential",
+        titleWords: ["Unlock Your Freelance Potential", "Discover New Opportunities", "Build Your Dream Career"],
         description: "Join TalentSphere to find exciting projects that match your skills and passion. Start building your dream career today!",
         ctaText: "Explore Opportunities",
         ctaLink: "/browse-tasks",
@@ -12,7 +13,7 @@ const slidesData = [
     },
     {
         id: 2,
-        title: "Hire Top Talent, Effortlessly",
+        titleWords: ["Hire Top Talent, Effortlessly", "Find Skilled Freelancers", "Get Quality Work Done"],
         description: "Post your project and connect with skilled freelancers ready to bring your ideas to life. Quality work, delivered on time.",
         ctaText: "Post a Task",
         ctaLink: "/add-task",
@@ -20,14 +21,13 @@ const slidesData = [
     },
     {
         id: 3,
-        title: "Flexible Work, Meaningful Impact",
+        titleWords: ["Flexible Work, Meaningful Impact", "Work From Anywhere", "Join Our Community"],
         description: "Discover a world of freelance jobs that offer flexibility and the chance to work on impactful projects from anywhere.",
         ctaText: "Sign Up Now",
         ctaLink: "/signup",
         bgClass: "bg-gradient-to-r from-info to-success",
     }
 ];
-
 
 const allTasksData = [
     { id: 1, title: "Urgent: Need a Logo Designer", description: "Looking for a creative logo for a new tech startup.", budget: "$200", deadline: "2025-05-28T23:59:59Z", category: "Design" },
@@ -45,7 +45,6 @@ const Home = () => {
     const [featuredTasks, setFeaturedTasks] = useState([]);
 
     useEffect(() => {
-        
         const sortedTasks = [...allTasksData]
             .sort((a, b) => new Date(a.deadline) - new Date(b.deadline)) 
             .slice(0, 6); 
@@ -60,11 +59,10 @@ const Home = () => {
         setCurrentSlide((prev) => (prev === 0 ? slidesData.length - 1 : prev - 1));
     };
 
-    
     useEffect(() => {
-        const slideInterval = setInterval(nextSlide, 5000); 
+        const slideInterval = setInterval(nextSlide, 7000); // Increased interval for typewriter
         return () => clearInterval(slideInterval); 
-    }, []);
+    }, [currentSlide]);
 
     return (
         <div className="space-y-16 mb-16"> 
@@ -76,7 +74,21 @@ const Home = () => {
                         className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${slide.bgClass} text-primary-content flex items-center justify-center text-center p-4 md:p-8 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                     >
                         <div className="container mx-auto">
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 animate-fade-in-down">{slide.title}</h1>
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 animate-fade-in-down">
+                                {index === currentSlide && ( // Only render Typewriter for the active slide
+                                    <Typewriter
+                                        words={slide.titleWords}
+                                        loop={0} // Loop indefinitely
+                                        cursor
+                                        cursorStyle='_'
+                                        typeSpeed={70}
+                                        deleteSpeed={50}
+                                        delaySpeed={1500}
+                                    />
+                                )}
+                                {/* Fallback for non-active slides to prevent layout shift, or keep it empty */}
+                                {index !== currentSlide && <span>{slide.titleWords[0]}</span>}
+                            </h1>
                             <p className="text-lg md:text-xl lg:text-2xl mb-8 animate-fade-in-up animation-delay-300">{slide.description}</p>
                             <Link to={slide.ctaLink} className="btn btn-accent btn-lg animate-fade-in-up animation-delay-600">
                                 {slide.ctaText}
@@ -220,9 +232,9 @@ const Home = () => {
                                      <img src="https://img.daisyui.com/images/stock/photo-1507003211169-0a1dd7228f2d.jpg" alt="Alice Brown" />
                                 </div>
                             </div>
-                            <p className="italic text-gray-600">"A fantastic marketplace for both clients and freelancers. The interface is user-friendly and support is responsive."</p>
+                            <p className="italic text-base-content/80">"A fantastic marketplace for both clients and freelancers. The interface is user-friendly and support is responsive."</p>
                             <div className="mt-4 text-center">
-                                <p className="font-semibold">- Alice Brown, Marketing Manager</p>
+                                <p className="font-semibold text-base-content">- Alice Brown, Marketing Manager</p>
                             </div>
                         </div>
                     </div>
