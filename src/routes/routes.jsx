@@ -5,14 +5,13 @@ import Root from "../pages/Root";
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: Root,
+    element: <Root />,
     children: [
-        {
-            index: true,
-            path: "/",
-            Component: Home,
-        }
-    ]
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
   },
 ]);
 

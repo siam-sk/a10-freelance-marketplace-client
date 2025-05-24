@@ -1,10 +1,14 @@
 import React from 'react';
+import { Outlet } from 'react-router';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Root = () => {
     return (
         <div>
-            This is the Root Page
-            <p>Welcome to the root page of our application!</p>
+            <Header />
+            <Outlet />
+            <Footer />
         </div>
     );
 };
