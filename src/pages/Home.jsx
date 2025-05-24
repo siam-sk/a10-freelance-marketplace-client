@@ -73,7 +73,7 @@ const Home = () => {
             setErrorTasks(null);
             try {
                 
-                const response = await fetch('http://localhost:5000/tasks?sortBy=deadline_asc&limit=6&status=open');
+                const response = await fetch('http://a10-freelance-marketplace-server.vercel.app/tasks?sortBy=deadline_asc&limit=6&status=open');
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);

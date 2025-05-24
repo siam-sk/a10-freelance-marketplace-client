@@ -4,7 +4,7 @@ TalentSphere is a modern, full-stack freelance marketplace platform designed to 
 
 ## Live Site URL
 
-[Visit TalentSphere Live](https://your-live-site-url.com)
+[Visit TalentSphere Live](https://a10-freelance-marketpace.web.app/)
 
 ## Key Features
 
@@ -87,7 +87,7 @@ TalentSphere is a modern, full-stack freelance marketplace platform designed to 
     # or (if you have a dev script like nodemon)
     # npm run dev 
     ```
-    The server will be running on `http://localhost:5000` (or the port specified in your `.env`).
+    The server will be running on `http://a10-freelance-marketplace-server.vercel.app` (or the port specified in your `.env`).
 
 ## Project Structure (Client)
 

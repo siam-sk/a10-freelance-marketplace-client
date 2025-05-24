@@ -24,7 +24,7 @@ export const BidProvider = ({ children }) => {
         }
         setLoadingBids(true);
         try {
-            const response = await fetch(`http://localhost:5000/bids/user/${currentUserId}/summary`);
+            const response = await fetch(`http://a10-freelance-marketplace-server.vercel.app/bids/user/${currentUserId}/summary`);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to fetch bid summary');
@@ -57,7 +57,7 @@ export const BidProvider = ({ children }) => {
             throw new Error("User not authenticated.");
         }
         try {
-            const response = await fetch('http://localhost:5000/bids', {
+            const response = await fetch('http://a10-freelance-marketplace-server.vercel.app/bids', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

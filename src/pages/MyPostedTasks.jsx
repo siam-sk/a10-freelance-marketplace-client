@@ -22,7 +22,7 @@ const MyPostedTasks = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch(`http://localhost:5000/tasks?userId=${user.uid}`);
+                const response = await fetch(`http://a10-freelance-marketplace-server.vercel.app/tasks?userId=${user.uid}`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -64,7 +64,7 @@ const MyPostedTasks = () => {
                         return;
                     }
 
-                    const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+                    const response = await fetch(`http://a10-freelance-marketplace-server.vercel.app/tasks/${taskId}`, {
                         method: 'DELETE',
 
                     });
@@ -109,7 +109,7 @@ const MyPostedTasks = () => {
                 }
             });
 
-            const response = await fetch(`http://localhost:5000/bids/task/${taskId}/count`);
+            const response = await fetch(`http://a10-freelance-marketplace-server.vercel.app/bids/task/${taskId}/count`);
             
             if (!response.ok) {
                 const errorData = await response.json();
