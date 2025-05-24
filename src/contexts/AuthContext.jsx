@@ -42,15 +42,17 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const signup = async (email, password, displayName) => {
+  const signup = async (email, password, displayName, photoURL) => {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, {
         displayName: displayName,
+        photoURL: photoURL || null
       });
+      setUser({ ...userCredential.user, displayName, photoURL });
       setLoading(false);
-      return userCredential.user;
+      return userCredential;
     } catch (error) {
       setLoading(false);
       console.error('Signup failed:', error.message, 'Code:', error.code);
@@ -76,8 +78,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
+      setUser(result.user);
       setLoading(false);
-      return result.user;
+      return result;
     } catch (error) {
       setLoading(false);
       console.error('Google Sign-In failed:', error.message, 'Code:', error.code);
