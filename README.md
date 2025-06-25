@@ -8,7 +8,6 @@ TalentSphere is a modern, full-stack freelance marketplace platform designed to 
 
 ## Key Features
 
-*   **User Authentication:** Secure registration and login for clients and freelancers, including options for email/password and Google Sign-In.
 *   **Task Management:** Clients can easily post new tasks with detailed descriptions, categories, deadlines, and budgets. They can also view, update, and delete their posted tasks.
 *   **Browse & Discover Tasks:** Freelancers can browse a comprehensive list of available tasks, view task details, and find projects matching their skills.
 *   **Bidding System:** Freelancers can place bids on tasks they are interested in. Clients can view the number of bids received for their tasks.
