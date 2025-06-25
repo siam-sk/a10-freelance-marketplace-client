@@ -25,7 +25,7 @@ const TaskDetail = () => {
             setLoadingTask(true);
             setError(null);
             try {
-                const response = await fetch(`http://a10-freelance-marketplace-server.vercel.app/tasks/${taskId}`);
+                const response = await fetch(`https://a10-freelance-marketplace-server.vercel.app/tasks/${taskId}`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
