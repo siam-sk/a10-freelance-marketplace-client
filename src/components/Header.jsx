@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo2.png';
 
 const Header = () => {
     const { user, logout, loading } = useAuth();

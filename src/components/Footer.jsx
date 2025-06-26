@@ -3,16 +3,14 @@ import { Link } from 'react-router';
 
 const Footer = () => {
     return (
-        <footer className="footer footer-center p-10 bg-base-300 text-base-content">
-            <nav>
-                <h6 className="footer-title">Company</h6>
+        <footer className="footer footer-center p-10 bg-neutral text-neutral-content">
+            <nav className="grid grid-flow-col gap-4">
                 <Link to="/about-us" className="link link-hover">About us</Link>
-                <Link to="/terms-conditions" className="link link-hover">Terms & Conditions</Link>
+                <Link to="/contact" className="link link-hover">Contact</Link>
                 <Link to="/privacy-policy" className="link link-hover">Privacy policy</Link>
+                <Link to="/terms-conditions" className="link link-hover">Terms & Conditions</Link>
             </nav>
-            
             <nav>
-                <h6 className="footer-title">Social</h6>
                 <div className="grid grid-flow-col gap-4">
                     <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="link link-hover">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="fill-current"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-.422.724-.665 1.564-.665 2.458 0 1.488.76 2.795 1.905 3.563-.706-.023-1.368-.216-1.947-.538v.059c0 2.08 1.48 3.818 3.437 4.209-.359.097-.737.148-1.13.148-.276 0-.545-.027-.811-.076.544 1.7 2.123 2.958 3.99 2.994-1.472 1.148-3.336 1.832-5.357 1.832-.348 0-.692-.02-1.033-.062 1.905 1.223 4.163 1.936 6.59 1.936 7.906 0 12.23-6.56 12.23-12.234 0-.186-.004-.372-.012-.556.84-.603 1.568-1.356 2.143-2.224z"></path></svg>
@@ -25,12 +23,9 @@ const Footer = () => {
                     </a>
                 </div>
             </nav>
-            
-            <nav>
-                <h6 className="footer-title">Legal & Contact</h6>
-                <p className="text-sm">Contact: support@talentsphere.com</p>
-                <p className="text-sm">Copyright © {new Date().getFullYear()} - All right reserved by TalentSphere Ltd</p>
-            </nav>
+            <div className="text-center">
+                <p>Copyright © {new Date().getFullYear()} - All right reserved by TalentSphere Ltd</p>
+            </div>
         </footer>
     );
 };
