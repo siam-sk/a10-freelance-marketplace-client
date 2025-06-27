@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import Swal from 'sweetalert2';
-import { CurrencyDollarIcon, CalendarDaysIcon, TagIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { CurrencyDollarIcon, CalendarDaysIcon, TagIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
 
 const AllTasksTable = () => {
     const [tasks, setTasks] = useState([]);
@@ -24,11 +24,6 @@ const AllTasksTable = () => {
             } catch (err) {
                 console.error("Failed to fetch all tasks:", err);
                 setError(err.message);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to Load Tasks',
-                    text: err.message,
-                });
             } finally {
                 setLoading(false);
             }
@@ -39,7 +34,9 @@ const AllTasksTable = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-10">
+            <div className="flex flex-col items-center justify-center p-10">
+                <h1 className="text-3xl font-bold text-base-content mb-2">Loading All Tasks...</h1>
+                <p className="text-base-content/70 mb-6">Please wait while we fetch the data.</p>
                 <span className="loading loading-spinner loading-lg text-primary"></span>
             </div>
         );
@@ -47,84 +44,88 @@ const AllTasksTable = () => {
 
     if (error) {
         return (
-            <div className="p-10 text-center">
+            <div className="p-10 text-center bg-base-100 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold text-error">Error Loading Tasks</h2>
-                <p className="text-base-content/70">{error}</p>
+                <p className="text-base-content/70 mt-2">{error}</p>
             </div>
         );
     }
 
     return (
-        <div className="p-4 sm:p-0">
-            <h1 className="text-2xl font-bold text-base-content mb-6">All Site Tasks</h1>
-            {tasks.length === 0 ? (
-                <div className="text-center py-10 px-4 bg-base-100 rounded-lg shadow-md">
-                    <p className="text-xl font-semibold text-base-content/70">No tasks have been posted on the site yet.</p>
-                </div>
-            ) : (
-                <div className="overflow-x-auto bg-base-100 rounded-lg shadow">
-                    <table className="table w-full">
-                        <thead>
-                            <tr>
-                                <th>Task Title</th>
-                                <th>Posted By</th>
-                                <th>Category</th>
-                                <th>Budget</th>
-                                <th>Deadline</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tasks.map((task) => (
-                                <tr key={task._id} className="hover">
-                                    <td>
-                                        <div className="font-bold">{task.title}</div>
-                                    </td>
-                                    <td>
-                                        <div className="flex items-center space-x-3">
-                                            <UserCircleIcon className="w-6 h-6 text-base-content/50" />
-                                            <div>
-                                                <div className="font-medium">{task.userName || 'N/A'}</div>
-                                                <div className="text-sm opacity-60">{task.userEmail}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge badge-ghost badge-sm flex items-center gap-1">
-                                            <TagIcon className="w-3 h-3" /> {task.category}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className="flex items-center gap-1">
-                                            <CurrencyDollarIcon className="w-4 h-4 text-success" /> ${task.budget.toLocaleString()}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="flex items-center gap-1">
-                                            <CalendarDaysIcon className="w-4 h-4 text-error" /> {new Date(task.deadline).toLocaleDateString()}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className={`badge badge-sm capitalize ${
-                                            task.status === 'open' ? 'badge-success' : 
-                                            task.status === 'in progress' ? 'badge-warning' : 
-                                            task.status === 'completed' ? 'badge-info' : 'badge-ghost'
-                                        }`}>
-                                            {task.status}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <Link to={`/task/${task._id}`} className="btn btn-primary btn-xs">
-                                            View Details
-                                        </Link>
-                                    </td>
+        <div>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-base-content">All Available Tasks</h1>
+                <p className="text-base-content/70 mt-1">Browse all tasks posted on the platform.</p>
+            </div>
+
+            <div className="card bg-base-100 shadow-xl">
+                <div className="card-body p-0">
+                    <div className="overflow-x-auto">
+                        <table className="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Task Title & Category</th>
+                                    <th>Posted By</th>
+                                    <th>Budget</th>
+                                    <th>Deadline</th>
+                                    <th></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {tasks.map(task => (
+                                    <tr key={task._id} className="hover">
+                                        <td>
+                                            <div className="flex items-center space-x-3">
+                                                <div>
+                                                    <div className="font-bold">{task.title}</div>
+                                                    <div className="text-sm opacity-50 flex items-center">
+                                                        <TagIcon className="w-3 h-3 mr-1" /> {task.category}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="flex items-center space-x-3">
+                                                <div className="avatar">
+                                                    <div className="mask mask-squircle w-12 h-12">
+                                                        <img src={task.employerPhotoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(task.employerName || 'U')}&background=random`} alt="Employer Avatar" />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold">{task.employerName}</div>
+                                                    <div className="text-sm opacity-50">{task.employerEmail}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="flex items-center">
+                                                <CurrencyDollarIcon className="w-4 h-4 mr-1 text-success" />
+                                                <span className="font-semibold">${task.budget.toLocaleString()}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="flex items-center">
+                                                <CalendarDaysIcon className="w-4 h-4 mr-1 text-error" />
+                                                {new Date(task.deadline).toLocaleDateString()}
+                                            </div>
+                                        </td>
+                                        <th>
+                                            <Link to={`/task/${task._id}`} className="btn btn-primary btn-sm">View Details</Link>
+                                        </th>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                     {tasks.length === 0 && (
+                        <div className="text-center py-10 px-4">
+                            <BriefcaseIcon className="h-12 w-12 mx-auto text-base-content/30 mb-4" />
+                            <p className="text-lg font-semibold text-base-content/70">No tasks found.</p>
+                            <p className="text-base-content/50 mt-1">There are currently no tasks available.</p>
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 };

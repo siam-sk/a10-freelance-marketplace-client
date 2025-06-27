@@ -60,7 +60,9 @@ const DashboardOverview = () => {
             {isLoading ? (
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(3)].map((_, i) => (
-                        <div key={i} className="h-28 bg-base-100 rounded-lg shadow-lg animate-pulse"></div>
+                        <div key={i} className="card bg-base-100 shadow-xl h-32 animate-pulse">
+                            <div className="card-body"></div>
+                        </div>
                     ))}
                 </div>
             ) : error ? (
@@ -72,48 +74,42 @@ const DashboardOverview = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className={`card bg-base-100 shadow-lg border-l-4 border-primary`}>
+                    <div className="card bg-base-100 shadow-xl border-l-4 border-primary">
                         <div className="card-body flex-row items-center justify-between p-5">
                             <div>
-                                <div className="text-sm font-medium text-base-content/70 uppercase">Total Available Tasks</div>
+                                <div className="text-sm font-medium text-base-content/70 uppercase">Available Tasks</div>
                                 <div className="text-3xl font-bold">{stats.totalTasks}</div>
-                                <Link to="/dashboard/all-tasks" className="text-sm text-primary hover:underline mt-1">Browse all tasks</Link>
+                                <Link to="all-tasks" className="text-sm text-primary hover:underline mt-1">Browse all tasks</Link>
                             </div>
-                            <div className="flex-shrink-0">
-                                <BriefcaseIcon className="h-10 w-10 text-primary" />
-                            </div>
+                            <BriefcaseIcon className="h-10 w-10 text-primary opacity-70" />
                         </div>
                     </div>
-                    <div className={`card bg-base-100 shadow-lg border-l-4 border-secondary`}>
+                    <div className="card bg-base-100 shadow-xl border-l-4 border-secondary">
                         <div className="card-body flex-row items-center justify-between p-5">
                             <div>
                                 <div className="text-sm font-medium text-base-content/70 uppercase">My Posted Tasks</div>
                                 <div className="text-3xl font-bold">{stats.myTasks}</div>
-                                <Link to="/dashboard/my-tasks" className="text-sm text-primary hover:underline mt-1">View my tasks</Link>
+                                <Link to="my-tasks" className="text-sm text-secondary hover:underline mt-1">View my tasks</Link>
                             </div>
-                            <div className="flex-shrink-0">
-                                <DocumentDuplicateIcon className="h-10 w-10 text-secondary" />
-                            </div>
+                            <DocumentDuplicateIcon className="h-10 w-10 text-secondary opacity-70" />
                         </div>
                     </div>
-                    <div className={`card bg-base-100 shadow-lg border-l-4 border-accent`}>
+                    <div className="card bg-base-100 shadow-xl border-l-4 border-accent">
                         <div className="card-body flex-row items-center justify-between p-5">
                             <div>
                                 <div className="text-sm font-medium text-base-content/70 uppercase">My Bids</div>
                                 <div className="text-3xl font-bold">{totalBidOpportunities}</div>
-                                <Link to="/dashboard/my-bids" className="text-sm text-primary hover:underline mt-1">View my bids</Link>
+                                <Link to="my-bids" className="text-sm text-accent hover:underline mt-1">View my bids</Link>
                             </div>
-                            <div className="flex-shrink-0">
-                                <CurrencyDollarIcon className="h-10 w-10 text-accent" />
-                            </div>
+                            <CurrencyDollarIcon className="h-10 w-10 text-accent opacity-70" />
                         </div>
                     </div>
                 </div>
             )}
 
-            <div className="mt-10 card bg-base-100 shadow-lg">
+            <div className="mt-10 card bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <h2 className="card-title text-xl border-b pb-3 mb-4">My Profile Information</h2>
+                    <h2 className="card-title text-xl border-b border-base-300 pb-3 mb-4">My Profile Information</h2>
                     <div className="flex items-center space-x-4">
                         <div className="avatar">
                             <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">

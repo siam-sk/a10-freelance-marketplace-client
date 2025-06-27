@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
-import { Link, useNavigate } from 'react-router'; 
 import Swal from 'sweetalert2';
+import { CurrencyDollarIcon, CalendarDaysIcon, PencilIcon, TrashIcon, PlusIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
+import UpdateTaskModal from '../components/UpdateTaskModal';
 
 const MyPostedTasks = () => {
     const { user, loading: authLoading } = useAuth();
@@ -9,9 +11,11 @@ const MyPostedTasks = () => {
     const [myTasks, setMyTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
 
     useEffect(() => {
-        if (authLoading) return; 
+        if (authLoading) return;
 
         if (!user) {
             navigate('/login', { state: { from: { pathname: '/dashboard/my-tasks' } } });
@@ -24,19 +28,14 @@ const MyPostedTasks = () => {
             try {
                 const response = await fetch(`https://a10-freelance-marketplace-server.vercel.app/tasks?userId=${user.uid}`);
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                    throw new Error('Failed to fetch your tasks.');
                 }
                 const data = await response.json();
+                data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setMyTasks(data);
             } catch (err) {
-                console.error("Failed to fetch my tasks:", err);
                 setError(err.message);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to Load Your Tasks',
-                    text: err.message || 'Could not retrieve your tasks. Please try again.',
-                });
+                console.error("Error fetching my tasks:", err);
             } finally {
                 setLoading(false);
             }
@@ -45,7 +44,26 @@ const MyPostedTasks = () => {
         fetchMyTasks();
     }, [user, authLoading, navigate]);
 
-    const handleDeleteTask = async (taskId) => {
+    const handleOpenUpdateModal = (task) => {
+        setSelectedTask(task);
+        setIsUpdateModalOpen(true);
+    };
+
+    const handleCloseUpdateModal = () => {
+        setIsUpdateModalOpen(false);
+        setSelectedTask(null);
+    };
+
+    const handleTaskUpdated = (updatedTask) => {
+        setMyTasks(prevTasks =>
+            prevTasks.map(task =>
+                task._id === updatedTask._id ? updatedTask : task
+            )
+        );
+        handleCloseUpdateModal();
+    };
+
+    const handleDelete = (taskId) => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -57,85 +75,28 @@ const MyPostedTasks = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-
-                    const taskToDelete = myTasks.find(task => task._id === taskId);
-                    if (taskToDelete && taskToDelete.userId !== user.uid) {
-                        Swal.fire('Access Denied!', 'You can only delete tasks you have posted.', 'error');
-                        return;
-                    }
-
                     const response = await fetch(`https://a10-freelance-marketplace-server.vercel.app/tasks/${taskId}`, {
                         method: 'DELETE',
-
                     });
 
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || 'Failed to delete the task.');
+                        throw new Error('Failed to delete the task.');
                     }
 
-
                     setMyTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
-                    
-                    Swal.fire(
-                        'Deleted!',
-                        'Your task has been deleted.',
-                        'success'
-                    );
+                    Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
                 } catch (err) {
-                    console.error("Error deleting task:", err);
-                    Swal.fire(
-                        'Error!',
-                        err.message || 'Could not delete the task. Please try again.',
-                        'error'
-                    );
+                    Swal.fire('Error!', err.message, 'error');
                 }
             }
         });
     };
 
-    const handleUpdateTask = (taskId) => {
-        navigate(`/update-task/${taskId}`); 
-    };
-
-    const handleViewBids = async (taskId) => {
-        try {
-            Swal.fire({
-                title: 'Fetching Bids...',
-                text: 'Please wait while we retrieve the bid count.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const response = await fetch(`https://a10-freelance-marketplace-server.vercel.app/bids/task/${taskId}/count`);
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json(); 
-
-            Swal.fire(
-                'Total Bids',
-                `This task has received ${data.count} bid(s).`,
-                'info'
-            );
-        } catch (error) {
-            console.error("Error fetching bid count:", error);
-            Swal.fire(
-                'Error!',
-                error.message || 'Could not retrieve bid count. Please try again.',
-                'error'
-            );
-        }
-    };
-
     if (loading || authLoading) {
         return (
-            <div className="min-h-[calc(100vh-136px)] flex items-center justify-center bg-base-200">
+            <div className="flex flex-col items-center justify-center p-10">
+                <h1 className="text-3xl font-bold text-base-content mb-2">Loading Your Tasks...</h1>
+                <p className="text-base-content/70 mb-6">Please wait while we fetch your data.</p>
                 <span className="loading loading-spinner loading-lg text-primary"></span>
             </div>
         );
@@ -143,96 +104,95 @@ const MyPostedTasks = () => {
 
     if (error) {
         return (
-            <div className="min-h-[calc(100vh-136px)] flex flex-col items-center justify-center bg-base-200 p-4">
-                <h2 className="text-2xl font-semibold text-error mb-4">Error Loading Your Tasks</h2>
-                <p className="text-base-content/70 mb-6 text-center">{error}</p>
-                <button onClick={() => window.location.reload()} className="btn btn-primary">
-                    Try Again
-                </button>
+            <div className="p-10 text-center bg-base-100 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold text-error">Error Loading Your Tasks</h2>
+                <p className="text-base-content/70 mt-2">{error}</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="container mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-center mb-10 text-base-content">My Posted Tasks</h1>
-                    <Link to="/dashboard/add-task" className="btn btn-primary">
-                        Post a New Task
-                    </Link>
+        <div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-base-content">My Posted Tasks</h1>
+                    <p className="text-base-content/70 mt-1">Manage the tasks you have created.</p>
                 </div>
-                {myTasks.length > 0 ? (
-                    <div className="overflow-x-auto bg-base-100 shadow-xl rounded-lg">
+                <Link to="/dashboard/add-task" className="btn btn-primary">
+                    <PlusIcon className="w-5 h-5 mr-1" />
+                    Post a New Task
+                </Link>
+            </div>
+
+            <div className="card bg-base-100 shadow-xl">
+                <div className="card-body p-0">
+                    <div className="overflow-x-auto">
                         <table className="table w-full">
                             <thead>
-                                <tr className="bg-base-200">
-                                    <th>Title</th>
-                                    <th>Category</th>
+                                <tr>
+                                    <th>Task Title</th>
                                     <th>Budget</th>
                                     <th>Deadline</th>
                                     <th>Status</th>
-                                    <th className="text-center">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {myTasks.map(task => (
                                     <tr key={task._id} className="hover">
                                         <td>
-                                            <Link to={`/task/${task._id}`} className="font-medium hover:text-primary transition-colors">
-                                                {task.title}
-                                            </Link>
+                                            <Link to={`/task/${task._id}`} className="font-bold hover:text-primary">{task.title}</Link>
+                                            <div className="text-sm opacity-50">{task.category}</div>
                                         </td>
-                                        <td>{task.category}</td>
-                                        <td>${task.budget.toLocaleString()}</td>
-                                        <td>{new Date(task.deadline).toLocaleDateString()}</td>
                                         <td>
-                                            <span className={`badge ${
-                                                task.status === 'open' ? 'badge-success' : 
-                                                task.status === 'in progress' ? 'badge-warning' : 
-                                                task.status === 'completed' ? 'badge-info' : 'badge-ghost'
-                                            } badge-sm`}>
-                                                {task.status}
-                                            </span>
+                                            <div className="flex items-center">
+                                                <CurrencyDollarIcon className="w-4 h-4 mr-1 text-success" />
+                                                <span className="font-semibold">${task.budget.toLocaleString()}</span>
+                                            </div>
                                         </td>
-                                        <td className="text-center space-x-1">
-                                            <button 
-                                                onClick={() => handleUpdateTask(task._id)} 
-                                                className="btn btn-xs btn-outline btn-info"
-                                                title="Update Task"
-                                            >
-                                                Update
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDeleteTask(task._id)} 
-                                                className="btn btn-xs btn-outline btn-error"
-                                                title="Delete Task"
-                                            >
-                                                Delete
-                                            </button>
-                                            <button 
-                                                onClick={() => handleViewBids(task._id)} 
-                                                className="btn btn-xs btn-outline btn-primary"
-                                                title="View Bids"
-                                            >
-                                                Bids
-                                            </button>
+                                        <td>
+                                            <div className="flex items-center">
+                                                <CalendarDaysIcon className="w-4 h-4 mr-1 text-error" />
+                                                {new Date(task.deadline).toLocaleDateString()}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className={`badge ${task.status === 'open' ? 'badge-success' : 'badge-ghost'} capitalize`}>{task.status}</span>
+                                        </td>
+                                        <td>
+                                            <div className="flex items-center space-x-2">
+                                                <button onClick={() => handleOpenUpdateModal(task)} className="btn btn-ghost btn-sm btn-square" aria-label="Update">
+                                                    <PencilIcon className="w-5 h-5" />
+                                                </button>
+                                                <button onClick={() => handleDelete(task._id)} className="btn btn-ghost btn-sm btn-square text-error" aria-label="Delete">
+                                                    <TrashIcon className="w-5 h-5" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                ) : (
-                    <div className="text-center py-10 bg-base-100 shadow-xl rounded-lg">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-16 h-16 mx-auto text-base-content/30 mb-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h7.5M8.25 12h7.5m-7.5 3.75h7.5M3 3h18M3 21h18" />
-                        </svg>
-                        <p className="text-xl font-semibold text-base-content/70">You haven't posted any tasks yet.</p>
-                        <Link to="/add-task" className="btn btn-primary mt-6">Post Your First Task</Link>
-                    </div>
-                )}
+                    {myTasks.length === 0 && (
+                        <div className="text-center py-16 px-4">
+                            <BriefcaseIcon className="h-16 w-16 mx-auto text-base-content/30 mb-4" />
+                            <p className="text-xl font-semibold text-base-content/70">You haven't posted any tasks yet.</p>
+                            <p className="text-base-content/50 mt-2">Ready to get started?</p>
+                            <Link to="/dashboard/add-task" className="btn btn-primary mt-6">
+                                Post Your First Task
+                            </Link>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            <UpdateTaskModal
+                task={selectedTask}
+                isOpen={isUpdateModalOpen}
+                onClose={handleCloseUpdateModal}
+                onTaskUpdated={handleTaskUpdated}
+            />
         </div>
     );
 };

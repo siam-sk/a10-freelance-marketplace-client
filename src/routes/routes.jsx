@@ -9,7 +9,6 @@ import PrivateRoute from "./PrivateRoute";
 import BrowseTask from "../pages/BrowseTask";
 import TaskDetail from "../pages/TaskDetail";
 import MyPostedTasks from "../pages/MyPostedTasks";
-import UpdateTask from "../pages/UpdateTask";
 import Dashboard from "../pages/Dashboard";
 import DashboardOverview from "../pages/DashboardOverview";
 import MyBids from "../pages/MyBids";
@@ -61,14 +60,6 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyPostedTasks />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "update-task/:taskId",
-        element: (
-          <PrivateRoute>
-            <UpdateTask />
           </PrivateRoute>
         ),
       },
