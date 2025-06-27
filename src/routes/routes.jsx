@@ -2,17 +2,19 @@ import { createBrowserRouter } from "react-router";
 import Home from "../pages/Home";
 import Root from "../pages/Root";
 import ErrorPage from "../pages/ErrorPage";
-import Login from "../pages/Login"; 
-import Signup from "../pages/Signup"; 
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 import AddTask from "../pages/AddTask";
 import PrivateRoute from "./PrivateRoute";
-import BrowseTask from "../pages/BrowseTask";
+import BrowseTasks from "../pages/BrowseTask";
 import TaskDetail from "../pages/TaskDetail";
 import MyPostedTasks from "../pages/MyPostedTasks";
 import Dashboard from "../pages/Dashboard";
 import DashboardOverview from "../pages/DashboardOverview";
 import MyBids from "../pages/MyBids";
 import AllTasksTable from "../pages/AllTasksTable";
+import AboutUs from "../pages/AboutUs";
+import Contact from "../pages/Contact";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +27,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login", 
+        path: "login",
         element: <Login />,
       },
       {
@@ -45,15 +47,19 @@ const router = createBrowserRouter([
       },
       {
         path: "browse-tasks",
-        element: <BrowseTask />,
+        element: <BrowseTasks />,
       },
       {
-        path: "task/:taskId", 
-        element: (
-          <PrivateRoute>
-            <TaskDetail />
-          </PrivateRoute>
-        ),
+        path: "about-us",
+        element: <AboutUs />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "task/:taskId",
+        element: <TaskDetail />,
       },
       {
         path: "my-tasks",
