@@ -33,6 +33,8 @@ const Header = () => {
     const menuItemsList = [
         { path: "/", label: "Home", authRequired: false, icon: null },
         { path: "/browse-tasks", label: "Browse Tasks", authRequired: false, icon: null },
+        { path: "/about-us", label: "About Us", icon: null, hideWhenLoggedIn: true },
+        { path: "/contact", label: "Contact", icon: null, hideWhenLoggedIn: true },
         { path: "/add-task", label: "Add Task", authRequired: true, icon: (
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-1">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -46,7 +48,11 @@ const Header = () => {
     ];
 
     const generatedMenuItems = menuItemsList
-        .filter(item => !item.authRequired || (item.authRequired && user))
+        .filter(item => {
+            if (item.hideWhenLoggedIn) return !user;
+            if (item.authRequired) return !!user;
+            return true;
+        })
         .map(item => (
             <li key={item.path}>
                 <NavLink
@@ -63,7 +69,11 @@ const Header = () => {
         ));
     
     const desktopMenuLinks = menuItemsList
-        .filter(item => !item.authRequired || (item.authRequired && user))
+        .filter(item => {
+            if (item.hideWhenLoggedIn) return !user;
+            if (item.authRequired) return !!user;
+            return true;
+        })
         .map(item => (
             <li key={item.path}>
                 <NavLink
@@ -83,10 +93,10 @@ const Header = () => {
     }
 
     return (
-        <div className="navbar bg-base-100 text-base-content sticky top-0 z-[99] backdrop-blur-sm shadow-md px-4 md:px-8">
+        <div className="navbar bg-base-100 text-base-content sticky top-0 z-[99] backdrop-blur-sm shadow-md px-2 md:px-12">
             <div className="navbar-start">
                 <div className={`dropdown ${isMenuOpen ? 'dropdown-open' : ''}`}>
-                    <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden px-1">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
                         </svg>
@@ -113,9 +123,9 @@ const Header = () => {
                         </li>
                     </ul>
                 </div>
-                <Link to="/" className="btn btn-ghost normal-case text-xl font-bold flex items-center gap-2 px-1 md:px-2">
+                <Link to="/" className="btn btn-ghost normal-case flex items-center gap-1.5 px-1 md:px-2">
                     <img src={logo} alt="TalentSphere Logo" className="h-8 w-auto md:h-10" />
-                    <span className="hidden sm:inline">TalentSphere</span>
+                    <span className="hidden sm:inline font-extrabold text-2xl text-primary">TalentSphere</span>
                 </Link>
             </div>
             
@@ -138,40 +148,36 @@ const Header = () => {
                     )}
                 </button>
                 {user ? (
-                    <div className="dropdown dropdown-end">
-                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar tooltip tooltip-bottom tooltip-primary" data-tip={user.displayName || 'User Profile'}>
-                            <div className="w-10 rounded-full ring ring-offset-base-100 ring-offset-2 group-hover:ring-primary">
-                                <img 
-                                    alt={user.displayName || 'User avatar'} 
-                                    src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=random&color=fff&font-size=0.5`} 
-                                />
+                    <div className="flex items-center gap-2">
+                        <div className="dropdown dropdown-end">
+                            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar tooltip tooltip-bottom tooltip-primary" data-tip={user.displayName || 'User Profile'}>
+                                <div className="w-8 rounded-full ring ring-offset-base-100 ring-offset-2 group-hover:ring-primary">
+                                    <img 
+                                        alt={user.displayName || 'User avatar'} 
+                                        src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=random&color=fff&font-size=0.5`} 
+                                    />
+                                </div>
                             </div>
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-lg bg-base-100 text-base-content rounded-box w-60 border border-base-300">
+                                <li className="p-2 border-b border-base-300 mb-1">
+                                    <div className="font-bold truncate text-lg">{user.displayName || 'User'}</div>
+                                    {user.email && <div className="text-xs opacity-70 truncate">{user.email}</div>}
+                                </li>
+                                <li>
+                                    <NavLink to="/profile" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                        Profile
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/my-tasks" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
+                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
+                                        My Posted Tasks
+                                    </NavLink>
+                                </li>
+                            </ul>
                         </div>
-                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-lg bg-base-100 text-base-content rounded-box w-60 border border-base-300">
-                            <li className="p-2 border-b border-base-300 mb-1">
-                                <div className="font-bold truncate text-lg">{user.displayName || 'User'}</div>
-                                {user.email && <div className="text-xs opacity-70 truncate">{user.email}</div>}
-                            </li>
-                            <li>
-                                <NavLink to="/profile" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                                    Profile
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/my-tasks" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
-                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
-                                    My Posted Tasks
-                                </NavLink>
-                            </li>
-                            <div className="divider my-1"></div>
-                            <li>
-                                <button onClick={handleLogout} className="text-error hover:bg-error/10 w-full justify-start py-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" /></svg>
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
+                        <button onClick={handleLogout} className="btn btn-sm btn-error normal-case">Logout</button>
                     </div>
                 ) : (
                     <div className="flex items-center gap-2">

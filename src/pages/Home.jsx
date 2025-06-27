@@ -15,7 +15,6 @@ const slidesData = [
         description: "Join TalentSphere to find exciting projects that match your skills and passion. Start building your dream career today!",
         ctaText: "Explore Opportunities",
         ctaLink: "/browse-tasks",
-        bgClass: "bg-gradient-to-br from-primary via-purple-500 to-secondary",
         icon: <SparklesIcon className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 text-accent" />
     },
     {
@@ -24,7 +23,6 @@ const slidesData = [
         description: "Post your project and connect with skilled freelancers ready to bring your ideas to life. Quality work, delivered on time.",
         ctaText: "Post a Task",
         ctaLink: "/add-task",
-        bgClass: "bg-gradient-to-br from-accent via-teal-500 to-neutral",
         icon: <BriefcaseIcon className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 text-primary" />
     },
     {
@@ -33,7 +31,6 @@ const slidesData = [
         description: "Discover a world of freelance jobs that offer flexibility and the chance to work on impactful projects from anywhere.",
         ctaText: "Sign Up Now",
         ctaLink: "/signup",
-        bgClass: "bg-gradient-to-br from-info via-sky-500 to-success",
         icon: <UserGroupIcon className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 text-secondary" />
     }
 ];
@@ -54,7 +51,7 @@ const Home = () => {
     const [errorTasks, setErrorTasks] = useState(null);
 
     
-    const SLIDE_INTERVAL = 7000; 
+    const SLIDE_INTERVAL = 10000; 
 
     
     useEffect(() => {
@@ -73,7 +70,7 @@ const Home = () => {
             setErrorTasks(null);
             try {
                 
-                const response = await fetch('https://a10-freelance-marketplace-server.vercel.app/tasks?sortBy=deadline_asc&limit=6&status=open');
+                const response = await fetch('https://a10-freelance-marketplace-server.vercel.app/tasks?sortBy=deadline_asc&limit=4&status=open');
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -104,15 +101,19 @@ const Home = () => {
         <div className="bg-base-100 text-base-content min-h-screen">
             
             {!user && (
-                <section className="relative w-full min-h-[50vh] md:min-h-[60vh] lg:min-h-[70vh] overflow-hidden group shadow-lg"> {/* Reduced height */}
+                <section 
+                    className="relative w-full min-h-[50vh] md:min-h-[60vh] overflow-hidden group shadow-lg bg-cover bg-center"
+                    style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
+                >
+                    <div className="absolute inset-0 bg-black/60 z-0"></div>
                     {slidesData.map((slide, index) => (
                         <div
                             key={slide.id}
-                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${slide.bgClass} text-primary-content flex flex-col items-center justify-center text-center p-6 md:p-12 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out text-white flex flex-col items-center justify-center text-center p-6 md:p-12 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                         >
-                            <div className="container mx-auto max-w-3xl">
+                            <div className="container mx-auto max-w-5xl">
                                 {slide.icon && <div className="mb-3 md:mb-4 opacity-90">{React.cloneElement(slide.icon, { className: `${slide.icon.props.className} animate-pulse` })}</div>}
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 leading-tight">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 leading-tight whitespace-nowrap">
                                     {index === currentSlide ? (
                                         <Typewriter words={slide.titleWords} loop={true} cursor cursorStyle='|' typeSpeed={60} deleteSpeed={40} delaySpeed={2200} />
                                     ) : (
@@ -149,25 +150,25 @@ const Home = () => {
                     </div>
                 )}
                 {!loadingTasks && !errorTasks && featuredTasks.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {featuredTasks.map(task => (
                             <div key={task._id} className="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 group flex flex-col border border-base-300/50 hover:border-primary/50">
-                                <div className="card-body flex-grow p-5 md:p-6">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <h3 className="card-title text-lg md:text-xl font-semibold group-hover:text-primary transition-colors leading-tight">{task.title}</h3>
-                                        <span className="badge badge-ghost badge-md whitespace-nowrap ml-2 mt-1">{task.category}</span>
+                                <div className="card-body flex-grow p-4">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className="card-title text-lg font-semibold group-hover:text-primary transition-colors leading-tight">{task.title}</h3>
+                                        <span className="badge badge-ghost badge-sm whitespace-nowrap ml-2 mt-1">{task.category}</span>
                                     </div>
-                                    <p className="text-sm text-base-content/75 mt-1 mb-4 flex-grow min-h-[60px] line-clamp-3">{task.description}</p>
-                                    <div className="mt-auto space-y-2">
-                                        <div className="flex items-center text-sm text-base-content/80">
-                                            <CurrencyDollarIcon className="h-5 w-5 mr-2 text-success flex-shrink-0" />
+                                    <p className="text-sm text-base-content/75 mt-1 mb-3 flex-grow min-h-[40px] line-clamp-2">{task.description}</p>
+                                    <div className="mt-auto space-y-1.5">
+                                        <div className="flex items-center text-xs text-base-content/80">
+                                            <CurrencyDollarIcon className="h-4 w-4 mr-1.5 text-success flex-shrink-0" />
                                             <strong>Budget:</strong>&nbsp;<span className="font-medium">{formatBudget(task.budget)}</span>
                                         </div>
-                                        <div className="flex items-center text-sm text-base-content/80">
-                                            <CalendarDaysIcon className="h-5 w-5 mr-2 text-error flex-shrink-0" />
+                                        <div className="flex items-center text-xs text-base-content/80">
+                                            <CalendarDaysIcon className="h-4 w-4 mr-1.5 text-error flex-shrink-0" />
                                             <strong>Deadline:</strong>&nbsp;<span className="font-medium">{formatDate(task.deadline)}</span>
                                         </div>
-                                        <div className="card-actions justify-end pt-3">
+                                        <div className="card-actions justify-end pt-2">
                                             <Link to={`/task/${task._id}`} className="btn btn-primary btn-sm shadow-md hover:shadow-lg">View Details</Link>
                                         </div>
                                     </div>
