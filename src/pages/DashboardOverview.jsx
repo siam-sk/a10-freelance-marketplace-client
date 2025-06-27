@@ -7,6 +7,7 @@ import {
     DocumentDuplicateIcon, 
     CurrencyDollarIcon 
 } from '@heroicons/react/24/solid';
+import EditProfileModal from '../components/EditProfileModal';
 
 const DashboardOverview = () => {
     const { user } = useAuth();
@@ -14,6 +15,7 @@ const DashboardOverview = () => {
     const [stats, setStats] = useState({ totalTasks: 0, myTasks: 0 });
     const [loadingStats, setLoadingStats] = useState(true);
     const [error, setError] = useState(null);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -123,10 +125,16 @@ const DashboardOverview = () => {
                         </div>
                     </div>
                     <div className="card-actions justify-end mt-4">
-                        <Link to="/profile" className="btn btn-sm btn-outline btn-primary">Edit Profile</Link>
+                        <button onClick={() => setIsProfileModalOpen(true)} className="btn btn-sm btn-outline btn-primary">Edit Profile</button>
                     </div>
                 </div>
             </div>
+
+            <EditProfileModal 
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+                onProfileUpdate={() => setIsProfileModalOpen(false)}
+            />
         </div>
     );
 };
