@@ -123,7 +123,7 @@ const TaskDetail = () => {
     const alreadyBidOnThisTask = hasBid(taskId);
 
     return (
-        <div className="min-h-[calc(100vh-136px)] bg-purple-50 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-[calc(100vh-136px)] bg-base-200 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
             <div className="container mx-auto max-w-6xl">
 
                 {user && (

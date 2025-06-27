@@ -195,7 +195,7 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="bg-purple-50 py-12 md:py-16">
+            <section className="bg-base-200 py-12 md:py-16">
                 <div className="container mx-auto px-4 md:px-8 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold mb-10 md:mb-12">Explore Popular Categories</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
@@ -232,7 +232,7 @@ const Home = () => {
             )}
 
             {!user && (
-                <section className=" py-12 md:py-16 bg-purple-50">
+                <section className=" py-12 md:py-16 bg-base-200">
                     <div className="container mx-auto px-4 md:px-8 text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated!</h2>
                         <p className="max-w-2xl mx-auto mb-8 text-base-content/80">
