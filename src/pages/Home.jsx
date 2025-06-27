@@ -7,6 +7,7 @@ import {
     SparklesIcon, ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext'; 
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const slidesData = [
     {
@@ -44,6 +45,7 @@ const popularCategories = [
 ];
 
 const Home = () => {
+    useDocumentTitle('Home | TalentSphere');
     const { user } = useAuth(); 
     const [currentSlide, setCurrentSlide] = useState(0);
     const [featuredTasks, setFeaturedTasks] = useState([]);
