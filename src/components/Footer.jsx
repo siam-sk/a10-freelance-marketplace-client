@@ -39,14 +39,11 @@ const Footer = () => {
                         <h6 className="footer-title">Quick Links</h6>
                         <Link to="/" className="link link-hover">Home</Link>
                         <Link to="/browse-tasks" className="link link-hover">Browse Tasks</Link>
-                        <Link to="/add-task" className="link link-hover">Post a Task</Link>
                     </nav>
                     <nav className="flex flex-col gap-2">
                         <h6 className="footer-title">Company</h6>
                         <Link to="/about-us" className="link link-hover">About Us</Link>
                         <Link to="/contact" className="link link-hover">Contact</Link>
-                        <a href="#" className="link link-hover">Terms of Service</a>
-                        <a href="#" className="link link-hover">Privacy Policy</a>
                     </nav>
                     <nav>
                         <h6 className="footer-title">Follow Us</h6>

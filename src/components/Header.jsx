@@ -33,13 +33,18 @@ const Header = () => {
     const menuItemsList = [
         { path: "/", label: "Home", authRequired: null, icon: null },
         { path: "/browse-tasks", label: "Browse Tasks", authRequired: null, icon: null },
-        { path: "/login", label: "Login", authRequired: false, hideWhenLoggedIn: true, icon: null },
-        { path: "/signup", label: "Sign Up", authRequired: false, hideWhenLoggedIn: true, icon: null },
+        { path: "/about-us", label: "About Us", authRequired: false, icon: null },
+        { path: "/contact", label: "Contact", authRequired: false, icon: null },
+        { path: "/dashboard", label: "Dashboard", authRequired: true, icon: null },
     ];
 
     const filteredMenuItems = menuItemsList.filter(item => {
-        if (item.hideWhenLoggedIn) return !user;
-        if (item.authRequired) return !!user;
+        if (item.authRequired === true) {
+            return !!user;
+        }
+        if (item.authRequired === false) {
+            return !user;
+        }
         return true;
     });
 
@@ -89,6 +94,17 @@ const Header = () => {
                         tabIndex={0}
                         className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-lg bg-base-100 text-base-content rounded-box w-52">
                         {generatedMenuItems}
+                        
+                        {!user && (
+                            <>
+                                <li className="mt-1 pt-1 border-t border-base-300">
+                                    <NavLink to="/login" onClick={closeMenu} className={({isActive}) => isActive ? 'active' : ''}>Login</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/signup" onClick={closeMenu} className={({isActive}) => isActive ? 'active' : ''}>Sign Up</NavLink>
+                                </li>
+                            </>
+                        )}
                         <li className="mt-1 pt-1 border-t border-base-300">
                             <button 
                                 onClick={() => { 
@@ -132,42 +148,20 @@ const Header = () => {
                     )}
                 </button>
                 {user ? (
-                    <div className="flex items-center gap-2">
-                        <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar tooltip tooltip-bottom tooltip-primary" data-tip={user.displayName || 'User Profile'}>
-                                <div className="w-8 rounded-full ring ring-offset-base-100 ring-offset-2 group-hover:ring-primary">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="tooltip tooltip-bottom tooltip-primary" data-tip={user.email || 'User'}>
+                            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                                <div className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
                                     <img 
                                         alt={user.displayName || 'User avatar'} 
-                                        src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=random&color=fff&font-size=0.5`} 
+                                        src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=random&color=fff&font-size=0.5`} 
                                     />
                                 </div>
                             </div>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-lg bg-base-100 text-base-content rounded-box w-60 border border-base-300">
-                                <li className="p-2 border-b border-base-300 mb-1">
-                                    <div className="font-bold truncate text-lg">{user.displayName || 'User'}</div>
-                                    {user.email && <div className="text-xs opacity-70 truncate">{user.email}</div>}
-                                </li>
-                                <li>
-                                    <NavLink to="/dashboard" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v18h18V3H3.75Zm0 0h18M3.75 8.25h18M12 3v18" /></svg>
-                                        Dashboard
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/profile" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                                        Profile
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/my-tasks" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
-                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
-                                        My Posted Tasks
-                                    </NavLink>
-                                </li>
-                            </ul>
                         </div>
-                        <button onClick={handleLogout} className="btn btn-sm btn-error normal-case">Logout</button>
+                        <button onClick={handleLogout} className="btn btn-sm btn-outline btn-error normal-case">
+                            Logout
+                        </button>
                     </div>
                 ) : (
                     <div className="flex items-center gap-2">
