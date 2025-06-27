@@ -97,6 +97,12 @@ const Home = () => {
         return budget || 'N/A';
     };
 
+    const handleNewsletterSubmit = (e) => {
+        e.preventDefault();
+        alert('Thank you for subscribing!');
+        e.target.reset();
+    };
+
     return (
         <div className="bg-base-100 text-base-content min-h-screen">
             
@@ -142,7 +148,7 @@ const Home = () => {
                 </h2>
                 {loadingTasks && <div className="flex justify-center items-center h-64"><span className="loading loading-spinner loading-lg text-primary"></span></div>}
                 {errorTasks && !loadingTasks && (
-                    <div className="text-center py-10 px-4 bg-error/10 rounded-lg">
+                    <div className="text-center py-10 px-4 bg-base-100 rounded-lg shadow-md">
                         <ShieldCheckIcon className="h-16 w-16 mx-auto text-error mb-4" />
                         <p className="text-xl font-semibold text-error mb-2">Oops! Something went wrong.</p>
                         <p className="text-base-content/70 mb-6">{errorTasks}</p>
@@ -150,48 +156,48 @@ const Home = () => {
                     </div>
                 )}
                 {!loadingTasks && !errorTasks && featuredTasks.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {featuredTasks.map(task => (
-                            <div key={task._id} className="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 group flex flex-col border border-base-300/50 hover:border-primary/50">
-                                <div className="card-body flex-grow p-4">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="card-title text-lg font-semibold group-hover:text-primary transition-colors leading-tight">{task.title}</h3>
+                            <div key={task._id} className="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 group flex flex-col border-t-4 border-primary/20 hover:border-primary rounded-lg overflow-hidden">
+                                <div className="card-body p-6 flex-grow flex flex-col">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <h3 className="card-title text-lg font-bold group-hover:text-primary transition-colors leading-tight">{task.title}</h3>
                                         <span className="badge badge-ghost badge-sm whitespace-nowrap ml-2 mt-1">{task.category}</span>
                                     </div>
-                                    <p className="text-sm text-base-content/75 mt-1 mb-3 flex-grow min-h-[40px] line-clamp-2">{task.description}</p>
-                                    <div className="mt-auto space-y-1.5">
-                                        <div className="flex items-center text-xs text-base-content/80">
-                                            <CurrencyDollarIcon className="h-4 w-4 mr-1.5 text-success flex-shrink-0" />
-                                            <strong>Budget:</strong>&nbsp;<span className="font-medium">{formatBudget(task.budget)}</span>
+                                    <p className="text-sm text-base-content/75 mt-1 mb-4 flex-grow min-h-[60px] line-clamp-3">{task.description}</p>
+                                    <div className="mt-auto space-y-2.5 border-t border-base-300/30 pt-4">
+                                        <div className="flex items-center text-sm text-base-content/80">
+                                            <CurrencyDollarIcon className="h-5 w-5 mr-2 text-success flex-shrink-0" />
+                                            <span className="font-semibold">{formatBudget(task.budget)}</span>
                                         </div>
-                                        <div className="flex items-center text-xs text-base-content/80">
-                                            <CalendarDaysIcon className="h-4 w-4 mr-1.5 text-error flex-shrink-0" />
-                                            <strong>Deadline:</strong>&nbsp;<span className="font-medium">{formatDate(task.deadline)}</span>
-                                        </div>
-                                        <div className="card-actions justify-end pt-2">
-                                            <Link to={`/task/${task._id}`} className="btn btn-primary btn-sm shadow-md hover:shadow-lg">View Details</Link>
+                                        <div className="flex items-center text-sm text-base-content/80">
+                                            <CalendarDaysIcon className="h-5 w-5 mr-2 text-error flex-shrink-0" />
+                                            <span className="font-medium">{formatDate(task.deadline)}</span>
                                         </div>
                                     </div>
+                                </div>
+                                <div className="card-actions p-4 bg-base-200/30">
+                                    <Link to={`/task/${task._id}`} className="btn btn-primary btn-block shadow-md hover:shadow-lg">View Details</Link>
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
                 {!loadingTasks && !errorTasks && featuredTasks.length === 0 && (
-                     <div className="text-center py-10 px-4 bg-base-200/50 rounded-lg">
+                     <div className="text-center py-10 px-4 bg-base-100 rounded-lg shadow-md">
                         <BriefcaseIcon className="h-16 w-16 mx-auto text-base-content/30 mb-4" />
                         <p className="text-xl font-semibold text-base-content/70">No featured tasks available right now.</p>
                         <p className="text-base-content/50 mt-2">Check back soon or explore all tasks!</p>
                     </div>
                 )}
                 <div className="text-center mt-12 md:mt-16">
-                    <Link to="/browse-tasks" className="btn btn-outline btn-primary btn-wide shadow-sm hover:shadow-md">Browse All Tasks</Link>
+                    <Link to="/browse-tasks" className="btn btn-primary btn-wide shadow-sm hover:shadow-md">Browse All Tasks</Link>
                 </div>
             </section>
 
             <section className="bg-base-200 py-12 md:py-16">
-                <div className="container mx-auto px-4 md:px-8">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">Explore Popular Categories</h2>
+                <div className="container mx-auto px-4 md:px-8 text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-10 md:mb-12">Explore Popular Categories</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
                         {popularCategories.map(category => (
                             <Link key={category.name} to={category.link} className={`card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300 p-4 md:p-6 text-center items-center group transform hover:scale-105 hover:border-2 ${category.color.replace('text-', 'border-')}`}>
@@ -205,25 +211,44 @@ const Home = () => {
 
             
             {!user && (
-                <section className="py-12 md:py-16">
+                <section className="py-10 md:py-12">
                     <div className="container mx-auto px-4 md:px-8 text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-10 md:mb-12">How <span className="text-primary">TalentSphere</span> Works</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-8">How <span className="text-primary">TalentSphere</span> Works</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {[
-                                { icon: <PencilSquareIcon className="h-12 w-12 md:h-16 md:w-16 text-primary" />, title: "1. Post Your Task", description: "Clients easily describe project needs, set a budget, and publish tasks for skilled freelancers to discover." },
-                                { icon: <BriefcaseIcon className="h-12 w-12 md:h-16 md:w-16 text-secondary" />, title: "2. Find & Hire Talent", description: "Freelancers browse tasks, submit proposals, and clients select the best fit for their project." },
-                                { icon: <ShieldCheckIcon className="h-12 w-12 md:h-16 md:w-16 text-accent" />, title: "3. Get Quality Work Done", description: "Collaborate seamlessly, track progress, and receive high-quality work securely through our platform." }
+                                { icon: <PencilSquareIcon className="h-10 w-10 text-primary" />, title: "1. Post Task", description: "Describe your project, set a budget, and publish your task for freelancers to see." },
+                                { icon: <BriefcaseIcon className="h-10 w-10 text-secondary" />, title: "2. Hire Talent", description: "Browse proposals from skilled freelancers and hire the best fit for your project." },
+                                { icon: <ShieldCheckIcon className="h-10 w-10 text-accent" />, title: "3. Get It Done", description: "Collaborate, track progress, and receive high-quality work securely via our platform." }
                             ].map(step => (
-                                <div key={step.title} className="card bg-base-100 shadow-lg p-6 md:p-8 transform hover:scale-105 transition-transform duration-300 border border-transparent hover:border-primary/30">
-                                    <div className="flex justify-center mb-4 md:mb-6">{step.icon}</div>
-                                    <h3 className="text-xl md:text-2xl font-semibold mb-2 md:mb-3">{step.title}</h3>
-                                    <p className="text-base-content/70 text-sm md:text-base">{step.description}</p>
+                                <div key={step.title} className="bg-base-100 shadow-md rounded-lg p-4 transform hover:scale-105 transition-transform duration-300">
+                                    <div className="flex justify-center mb-3">{step.icon}</div>
+                                    <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                                    <p className="text-base-content/70 text-sm">{step.description}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </section>
             )}
+
+            <section className="bg-base-200 py-12 md:py-16">
+                <div className="container mx-auto px-4 md:px-8 text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated!</h2>
+                    <p className="max-w-2xl mx-auto mb-8 text-base-content/80">
+                        Subscribe to our newsletter to get the latest news, updates, and special offers delivered directly to your inbox.
+                    </p>
+                    <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row justify-center items-center gap-2 max-w-md mx-auto">
+                        <input 
+                            type="email" 
+                            placeholder="your-email@example.com" 
+                            className="input input-bordered w-full" 
+                            required 
+                        />
+                        <button type="submit" className="btn btn-primary w-full sm:w-auto">Subscribe</button>
+                    </form>
+                </div>
+            </section>
+
         </div>
     );
 };
