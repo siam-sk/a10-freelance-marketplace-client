@@ -8,6 +8,11 @@ TalentSphere is a modern, full-stack freelance marketplace platform designed to 
 
 [Visit TalentSphere Live](https://a10-freelance-marketpace.web.app/)
 
+## Repositories
+
+*   **Client-side:** (You are here)
+*   **Server-side:** [a10-freelance-marketplace-server](https://github.com/siam-sk/a10-freelance-marketplace-server)
+
 ## Key Features
 
 *   **Comprehensive User Dashboard:** A central hub for users to view key stats, manage profile information with an integrated editing modal, and navigate to different sections of the platform.
