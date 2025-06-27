@@ -1,5 +1,7 @@
 # TalentSphere - Freelance Marketplace
 
+![TalentSphere Screenshot](./public/firefox_cYrQeEXfe3.png)
+
 TalentSphere is a modern, full-stack freelance marketplace platform designed to connect clients with skilled freelancers. Built with React, Node.js, Express, and MongoDB, it offers a seamless experience for posting tasks, finding talent, and managing projects.
 
 ## Live Site URL
@@ -8,11 +10,13 @@ TalentSphere is a modern, full-stack freelance marketplace platform designed to 
 
 ## Key Features
 
-*   **Task Management:** Clients can easily post new tasks with detailed descriptions, categories, deadlines, and budgets. They can also view, update, and delete their posted tasks.
-*   **Browse & Discover Tasks:** Freelancers can browse a comprehensive list of available tasks, view task details, and find projects matching their skills.
-*   **Bidding System:** Freelancers can place bids on tasks they are interested in. Clients can view the number of bids received for their tasks.
-*   **Responsive Design & Theming:** A fully responsive user interface that adapts to various screen sizes, featuring a user-selectable dark/light theme for improved accessibility and user preference.
-*   **Interactive UI:** Engaging user interface elements, such as animated text and smooth transitions, to enhance the user experience.
+*   **Comprehensive User Dashboard:** A central hub for users to view key stats, manage profile information with an integrated editing modal, and navigate to different sections of the platform.
+*   **Dynamic Task Management:** Clients can easily post, view, update, and delete their tasks through an intuitive interface and modals.
+*   **Advanced Bidding System:** Freelancers can browse and bid on tasks. The "My Bids" page allows them to track the status (pending, accepted, rejected) of their applications.
+*   **User Authentication:** Secure user registration and login functionality handled by Firebase Authentication.
+*   **Dynamic Page Titles:** Page titles update dynamically for better user experience and SEO.
+*   **Responsive Design & Theming:** A fully responsive UI that adapts to all screen sizes, featuring a user-selectable dark/light theme.
+*   **Informational Pages:** Includes beautifully designed "About Us" and "Contact" pages.
 
 ## Technologies Used
 
