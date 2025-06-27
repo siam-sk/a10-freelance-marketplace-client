@@ -10,6 +10,10 @@ import BrowseTask from "../pages/BrowseTask";
 import TaskDetail from "../pages/TaskDetail";
 import MyPostedTasks from "../pages/MyPostedTasks";
 import UpdateTask from "../pages/UpdateTask";
+import Dashboard from "../pages/Dashboard";
+import DashboardOverview from "../pages/DashboardOverview";
+import MyBids from "../pages/MyBids";
+import AllTasksTable from "../pages/AllTasksTable";
 
 const router = createBrowserRouter([
   {
@@ -30,15 +34,18 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: "add-task",
-        element: (
-          <PrivateRoute>
-            <AddTask />
-          </PrivateRoute>
-        ),
+        path: "/dashboard",
+        element: <PrivateRoute><Dashboard /></PrivateRoute>,
+        children: [
+          { index: true, element: <DashboardOverview /> },
+          { path: "all-tasks", element: <AllTasksTable /> },
+          { path: "my-tasks", element: <MyPostedTasks /> },
+          { path: "add-task", element: <AddTask /> },
+          { path: "my-bids", element: <MyBids /> },
+        ],
       },
       {
-        path: "browse-tasks", 
+        path: "browse-tasks",
         element: <BrowseTask />,
       },
       {

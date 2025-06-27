@@ -50,7 +50,7 @@ const UpdateTask = () => {
                         title: 'Access Denied',
                         text: 'You can only update tasks that you have posted.',
                     });
-                    navigate('/my-tasks');
+                    navigate('/dashboard/my-tasks');
                     return;
                 }
                 
@@ -135,7 +135,7 @@ const UpdateTask = () => {
                 timer: 2000,
                 showConfirmButton: false
             });
-            navigate('/my-tasks'); 
+            navigate('/dashboard/my-tasks'); 
         } catch (err) {
             Swal.fire('Update Failed', err.message || 'Could not update the task.', 'error');
             console.error("Error updating task:", err);

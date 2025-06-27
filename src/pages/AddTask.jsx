@@ -30,18 +30,12 @@ const AddTask = () => {
     ];
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Not Authenticated',
-                text: 'You need to log in to add a task.',
-                timer: 2000,
-                showConfirmButton: false
-            });
-            navigate('/login', { state: { from: { pathname: '/add-task' } } });
+        if (authLoading) return; 
+
+        if (!user) {
+            navigate('/login', { state: { from: { pathname: '/dashboard/add-task' } } });
         }
     }, [user, authLoading, navigate]);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -129,7 +123,7 @@ const AddTask = () => {
                 showConfirmButton: false
             });
             
-            navigate('/my-tasks'); 
+            navigate('/dashboard/my-tasks'); 
 
             setTaskTitle('');
             setCategory('');

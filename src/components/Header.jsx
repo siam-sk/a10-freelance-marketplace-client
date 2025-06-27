@@ -31,62 +31,46 @@ const Header = () => {
     const closeMenu = () => setIsMenuOpen(false);
 
     const menuItemsList = [
-        { path: "/", label: "Home", authRequired: false, icon: null },
-        { path: "/browse-tasks", label: "Browse Tasks", authRequired: false, icon: null },
-        { path: "/about-us", label: "About Us", icon: null, hideWhenLoggedIn: true },
-        { path: "/contact", label: "Contact", icon: null, hideWhenLoggedIn: true },
-        { path: "/add-task", label: "Add Task", authRequired: true, icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-1">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-        )},
-        { path: "/my-tasks", label: "My Posted Tasks", authRequired: true, icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-1">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-            </svg>
-        )},
+        { path: "/", label: "Home", authRequired: null, icon: null },
+        { path: "/browse-tasks", label: "Browse Tasks", authRequired: null, icon: null },
+        { path: "/login", label: "Login", authRequired: false, hideWhenLoggedIn: true, icon: null },
+        { path: "/signup", label: "Sign Up", authRequired: false, hideWhenLoggedIn: true, icon: null },
     ];
 
-    const generatedMenuItems = menuItemsList
-        .filter(item => {
-            if (item.hideWhenLoggedIn) return !user;
-            if (item.authRequired) return !!user;
-            return true;
-        })
-        .map(item => (
-            <li key={item.path}>
-                <NavLink
-                    to={item.path}
-                    className={({ isActive }) => 
-                        `flex items-center py-2 ${isActive ? "active text-primary font-semibold" : "font-medium"}`
-                    }
-                    onClick={closeMenu}
-                >
-                    {item.icon}
-                    {item.label}
-                </NavLink>
-            </li>
-        ));
+    const filteredMenuItems = menuItemsList.filter(item => {
+        if (item.hideWhenLoggedIn) return !user;
+        if (item.authRequired) return !!user;
+        return true;
+    });
+
+    const generatedMenuItems = filteredMenuItems.map(item => (
+        <li key={item.path}>
+            <NavLink
+                to={item.path}
+                className={({ isActive }) => 
+                    `flex items-center py-2 ${isActive ? "active text-primary font-semibold" : "font-medium"}`
+                }
+                onClick={closeMenu}
+            >
+                {item.icon}
+                {item.label}
+            </NavLink>
+        </li>
+    ));
     
-    const desktopMenuLinks = menuItemsList
-        .filter(item => {
-            if (item.hideWhenLoggedIn) return !user;
-            if (item.authRequired) return !!user;
-            return true;
-        })
-        .map(item => (
-            <li key={item.path}>
-                <NavLink
-                    to={item.path}
-                    className={({ isActive }) => 
-                        `btn btn-ghost btn-sm normal-case flex items-center ${isActive ? "bg-primary/20 text-primary" : "text-base-content hover:bg-base-200"}`
-                    }
-                >
-                    {item.icon}
-                    {item.label}
-                </NavLink>
-            </li>
-        ));
+    const desktopMenuLinks = filteredMenuItems.map(item => (
+        <li key={item.path}>
+            <NavLink
+                to={item.path}
+                className={({ isActive }) => 
+                    `btn btn-ghost btn-sm normal-case flex items-center ${isActive ? "bg-primary/20 text-primary" : "text-base-content hover:bg-base-200"}`
+                }
+            >
+                {item.icon}
+                {item.label}
+            </NavLink>
+        </li>
+    ));
 
     if (loading && !user) { 
         return <div className="navbar bg-base-100 text-base-content sticky top-0 z-[99] backdrop-blur-sm h-[68px] animate-pulse px-4 md:px-8"></div>;
@@ -162,6 +146,12 @@ const Header = () => {
                                 <li className="p-2 border-b border-base-300 mb-1">
                                     <div className="font-bold truncate text-lg">{user.displayName || 'User'}</div>
                                     {user.email && <div className="text-xs opacity-70 truncate">{user.email}</div>}
+                                </li>
+                                <li>
+                                    <NavLink to="/dashboard" className={({isActive}) => `py-2 ${isActive && 'active'}`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v18h18V3H3.75Zm0 0h18M3.75 8.25h18M12 3v18" /></svg>
+                                        Dashboard
+                                    </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to="/profile" className={({isActive}) => `py-2 ${isActive && 'active'}`}>

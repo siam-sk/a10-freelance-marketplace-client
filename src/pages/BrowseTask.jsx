@@ -60,6 +60,10 @@ const BrowseTask = () => {
                         return b.budget - a.budget;
                     case 'deadline-asc':
                         return new Date(a.deadline) - new Date(b.deadline);
+                    case 'deadline-desc':
+                        return new Date(b.deadline) - new Date(a.deadline);
+                    case 'createdAt-asc':
+                        return new Date(a.createdAt) - new Date(b.createdAt);
                     case 'createdAt-desc':
                     default:
                         return new Date(b.createdAt) - new Date(a.createdAt);
@@ -137,7 +141,9 @@ const BrowseTask = () => {
                                     onChange={(e) => setSortBy(e.target.value)}
                                 >
                                     <option value="createdAt-desc">Sort by: Newest</option>
-                                    <option value="deadline-asc">Sort by: Deadline</option>
+                                    <option value="createdAt-asc">Sort by: Oldest</option>
+                                    <option value="deadline-asc">Sort by: Deadline (Soonest)</option>
+                                    <option value="deadline-desc">Sort by: Deadline (Furthest)</option>
                                     <option value="budget-desc">Sort by: Budget (High-Low)</option>
                                     <option value="budget-asc">Sort by: Budget (Low-High)</option>
                                 </select>
